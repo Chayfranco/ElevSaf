@@ -1,0 +1,84 @@
+/* Reset e configurações globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #002B61, #002B61);
+}
+
+/* Área de Cadastro */
+.area.de.login {
+    background: #f1BB19;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 350px;
+    width: 100%;
+}
+
+.text-login {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+/* Formulário */
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-roxo {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #002B61;
+    border-radius: 5px;
+    outline: none;
+    font-size: 16px;
+    background: white;
+}
+
+.input-roxo:focus {
+    border-color: #f1BB19;
+}
+
+/* Botão de Cadastro */
+.button-azul {
+    background: #002B61;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.button-azul:hover {
+    background: #001F47;
+}
+
+/* Ajuste para melhor usabilidade */
+.input-roxo::placeholder {
+    color: #666;
+}
+.cadastro-redirect {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.cadastro-redirect a {
+    color: #002B61;
+    text-decoration: none;
+    font-weight: bold;
+}
