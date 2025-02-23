@@ -3,11 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ínicio - ElevSaf </title>
-    <link rel="icon" href="../imagens/Design sem nome (1).png" type="image/x-icon">
-    
+    <title>Ínicio - ElevSaf</title>
+    <link rel="icon" href="../imagens/Design_sem_nome_logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/index.css">
 </head>
 <body>
 
+    <!-- Barra de navegação -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="../imagens/Design sem nome (1).png" alt="Logo ElevSaf">
+        </div>
+        <ul class="nav-links">
+            <li><a href="inicio.html">Início</a></li>
+            <li><a href="informacoes.html">Informações</a></li>
+            <li><a href="alerta.html">Alerta</a></li>
+            <li><a href="historico.html">Histórico</a></li>
+            <li><a href="perfil.html">Perfil</a></li>
+        </ul>
+    </nav>
+
+    <!-- Slider -->
+    <div class="slider">
+        <div class="slides">
+            <div class="slide">
+                <img src="../imagens/elevador0.webp" alt="Slide 1">
+            </div>
+            <div class="slide">
+                <img src="../imagens/elevador01.webp" alt="Slide 2">
+            </div>
+            <div class="slide">
+                <img src="../imagens/elevador02.webp" alt="Slide 3">
+            </div>
+        </div>
+
+        <!-- Logo sobreposta -->
+        <div class="slider-logo">
+            <img src="../imagens/nome.png" alt="Logo ElevSaf">
+        </div>
+
+        <!-- Texto sobreposto -->
+        <div class="slider-text">
+            <h1>Garantindo a segurança e eficiência dos seus elevadores com Sensoriamento Inteligente!</h1>
+        </div>
+
+        <!-- Botões de navegação manual -->
+        <div class="slider-buttons">
+            <button id="prevSlide" class="slider-button">&#10094;</button>
+            <button id="nextSlide" class="slider-button">&#10095;</button>
+        </div>
+    </div>
+
+    <script src="../js/index.js"></script>
 </body>
 </html>

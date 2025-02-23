@@ -3,25 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - ElevSaf </title>
-    <link rel="icon" href="../imagens/Design sem nome (1).png" type="image/x-icon">
+    <title>Cadastro - ElevSaf</title>
+    <link rel="icon" href="../imagens/Design_sem_nome_logo.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/cadastro.css">
-    
 </head>
-<body class="scroll completo">
+<body>
 
-    <div class="area de login">
-        <h2 class="text-login">Cadastro</h2>
-        
-        <form class="form">
-            <input type="nome" id="editTextFullName" placeholder="Digite o seu nome" class="input-roxo">
-            <input type="email" id="editTextEmail" placeholder="Digite um email" class="input-roxo">
-            <input type="password" id="editTextPassword" placeholder="Digite uma senha" class="input-roxo">
-            <input type="password" id="editTextConfirmPassword" placeholder="Confirme a senha" class="input-roxo">
-            <button type="submit" id="buttonSignup" class="button-azul">Cadastrar</button>
-        </form>
+    <div class="container">
+        <!-- Área da logo -->
+        <div class="logo-section">
+            <img src="../imagens/Imagem do WhatsApp de 2025-02-12 à(s) 12.26.18_5bab93a2.jpg" alt="Logo ElevSaf">
+        </div>
 
-        <p class="cadastro-redirect">Já possui uma conta? <a href="inicio.html">Faça o login</a></p>
+        <!-- Área do cadastro -->
+        <div class="login-section">
+            <div class="area-de-login">
+                <h2 class="text-login">Cadastro</h2>
+                
+                <form class="form">
+                    <input type="text" id="editTextFullName" placeholder="Digite o seu nome" class="input-roxo">
+                    <input type="email" id="editTextEmail" placeholder="Digite um email" class="input-roxo">
+                    <input type="password" id="editTextPassword" placeholder="Digite uma senha" class="input-roxo">
+                    <input type="password" id="editTextConfirmPassword" placeholder="Confirme a senha" class="input-roxo">
+                    <button type="submit" id="buttonSignup" class="button-azul">Cadastrar</button>
+                </form>
+
+                <p class="cadastro-redirect">Já possui uma conta? <a href="inicio.html">Faça o login</a></p>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="../js/cadastro.js"></script>

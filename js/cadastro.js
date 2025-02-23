@@ -3,14 +3,14 @@ import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyA6lwFb8AaEE8T0l5jn9hEtvUWsAoPp9pA",
-    authDomain: "elevsaf.firebaseapp.com",
-    databaseURL: "https://elevsaf-default-rtdb.firebaseio.com",
-    projectId: "elevsaf",
-    storageBucket: "elevsaf.appspot.com",
-    messagingSenderId: "231722044544",
-    appId: "1:231722044544:web:bc6ba860df9a5b8db76a65",
-    measurementId: "G-46KJ23622F"
+  apiKey: "AIzaSyA6lwFb8AaEE8T0l5jn9hEtvUWsAoPp9pA",
+  authDomain: "elevsaf.firebaseapp.com",
+  databaseURL: "https://elevsaf-default-rtdb.firebaseio.com",
+  projectId: "elevsaf",
+  storageBucket: "elevsaf.firebasestorage.app",
+  messagingSenderId: "231722044544",
+  appId: "1:231722044544:web:bc6ba860df9a5b8db76a65",
+  measurementId: "G-46KJ23622F"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -22,68 +22,79 @@ const editTextFullName = document.getElementById('editTextFullName');
 const editTextEmail = document.getElementById('editTextEmail');
 const editTextPassword = document.getElementById('editTextPassword');
 const editTextConfirmPassword = document.getElementById('editTextConfirmPassword');
-const buttonSignup = document.getElementById('buttonSignup');
 
 function mostrarMensagemErro(mensagem) {
     alert(mensagem);
 }
 
-// Validação de e-mail
+// Validação de e-mail (@gmail.com)
 function isEmailValido(email) {
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
-}
-
-// Validação de senha
-function isSenhaValida(senha) {
-    return senha.length >= 8 && /[A-Z]/.test(senha) && /[a-z]/.test(senha) && /[0-9]/.test(senha) && /[^A-Za-z0-9]/.test(senha);
+    return /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email);
 }
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const nome = editTextFullName.value.trim();
     const email = editTextEmail.value.trim();
     const senha = editTextPassword.value.trim();
     const confirmarSenha = editTextConfirmPassword.value.trim();
 
+    // Validações
     if (!nome || !email || !senha || !confirmarSenha) {
-        mostrarMensagemErro("Por favor, preencha todos os campos.");
+        mostrarMensagemErro("Preencha todos os campos.");
         return;
     }
-
     if (!isEmailValido(email)) {
-        mostrarMensagemErro("E-mail inválido.");
+        mostrarMensagemErro("E-mail inválido. Use um @gmail.com válido.");
         return;
     }
-
-    if (!isSenhaValida(senha)) {
-        mostrarMensagemErro("A senha deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma minúscula, um número e um caractere especial.");
+    if (senha.length < 8 || !/[A-Za-z]/.test(senha) || !/[0-9]/.test(senha)) {
+        mostrarMensagemErro("A senha deve ter pelo menos 8 caracteres, incluindo uma letra e um número.");
         return;
     }
-
     if (senha !== confirmarSenha) {
         mostrarMensagemErro("As senhas não coincidem.");
         return;
     }
 
     try {
+        console.log("Criando usuário...");
         const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
         const user = userCredential.user;
 
-        await sendEmailVerification(user);
+        console.log("Usuário criado:", user);
 
+        // Enviar e-mail de verificação
+        await sendEmailVerification(user);
+        console.log("E-mail de verificação enviado.");
+
+        // Salvar dados no Firestore
         await setDoc(doc(db, "usuarios", user.uid), {
             nome: nome,
-            email: email
+            email: email,
+            emailVerificado: false
         });
+        console.log("Dados salvos no Firestore.");
 
-        alert("Cadastro realizado com sucesso! Verifique seu e-mail para ativação.");
+        alert("Cadastro realizado! Verifique seu e-mail.");
+
         form.reset();
 
+        // Redirecionamento correto
+        setTimeout(() => {
+            window.location.href = "../html/confirmacao.html";
+        }, 2000);
+
     } catch (error) {
+        console.error("Erro no cadastro:", error);
+
         if (error.code === "auth/email-already-in-use") {
-            mostrarMensagemErro("Esse e-mail já está em uso por outra conta.");
+            mostrarMensagemErro("Esse e-mail já está em uso.");
+        } else if (error.code === "auth/invalid-api-key") {
+            mostrarMensagemErro("Erro de API Key inválida. Atualize sua chave no Firebase.");
+        } else if (error.code === "permission-denied") {
+            mostrarMensagemErro("Erro de permissão no Firestore. Atualize as regras.");
         } else {
             mostrarMensagemErro(error.message || "Erro desconhecido.");
         }
