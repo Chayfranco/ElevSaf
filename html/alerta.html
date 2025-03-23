@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerta - ElevSaf</title>
+    <link rel="icon" href="../imagens/Design_sem_nome_logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/alerta.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="../imagens/Design sem nome (1).png" alt="Logo ElevSaf">
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="informacoes.html">Informações</a></li>
+            <li><a style="color:#e00707" href="alerta.html">Alerta</a></li>
+            <li><a href="historico.html">Histórico</a></li>
+            <li><a href="perfil.html">Perfil</a></li>
+        </ul>
+    </nav>
+
+    <div class="alerta-container">
+        <h1>Monitoramento do Poço</h1>
+        <p>O sistema monitora a distância em tempo real e alerta quando um nível crítico é atingido.</p>
+    
+        <div class="alerta-box">
+            <label for="distanciaSensor">Distância real (mm) entre o elevador e o fundo do poço:</label>
+            <input type="number" id="distanciaSensor" class="input-roxo" readonly>
+        </div>
+        <div class="alerta-box">
+            <label for="distanciaAgua">Distância entre o elevador e a água (mm):</label>
+            <input type="number" id="distanciaAgua" class="input-roxo" readonly>
+        </div>
+        <div class="alerta-box">
+            <label>Resultado</label>
+            <p id="alertMessage" class="alert-message">Aguardando dados...</p>
+        </div>
+    </div>
+    
+
+    <div class="historico-container">
+        <h2>Histórico de Leituras</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data e Hora</th>
+                    <th>Distância Sensor (cm)</th>
+                    <th>Distância Água (cm)</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-historico"></tbody>
+        </table>
+    </div>
+
+    <script type="module" src="../js/alerta.js"></script>
+</body>
+</html>
