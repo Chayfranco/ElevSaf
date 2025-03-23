@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - ElevSaf</title>
+    <link rel="icon" href="../imagens/Design_sem_nome_logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/perfil.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="../imagens/Design sem nome (1).png" alt="Logo ElevSaf">
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="informacoes.html">Informações</a></li>
+            <li><a style="color:#e00707" href="alerta.html">Alerta</a></li>
+            <li><a href="historico.html">Histórico</a></li>
+            <li><a href="perfil.html">Perfil</a></li>
+            <li><a style="color:#f1BB19" href="inicio.html">Entrar</a></li>
+            <li><a style="color:#f1BB19" href="cadastro.html">Cadastre-se</a></li>
+        </ul>
+    </nav>
+
+    <div class="perfil">
+        <div class="perfil-container">
+            <h1>Perfil de Usuário</h1>
+            
+            <!-- Seção de informações do usuário -->
+            <div class="informacoes-usuario">
+                <img id="foto-perfil" class="avatar" src="../imagens/avatar.png" alt="Foto de Perfil">
+                <div class="detalhes-usuario">
+                    <p><strong>Nome:</strong> <span id="nome-usuario">João Silva</span></p>
+                    <p><strong>Email:</strong> joao@elevsaf.com</p>
+                    <button id="editar-perfil-btn" class="btn">Editar Perfil</button>
+                </div>
+            </div>
+
+            <!-- Sessão de configurações -->
+            <div class="configuracoes">
+                <h2>Configurações</h2>
+                <ul>
+                    <li><a href="#" onclick="abrirModalSenha()">Alterar Senha</a></li>
+                    <li><a href="#" onclick="sairDaConta()">Sair da Conta</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar perfil -->
+    <div id="modal-editar" class="modal">
+        <div class="modal-conteudo">
+            <span class="fechar" onclick="fecharModal()">×</span>
+            <h2>Editar Perfil</h2>
+            <label for="novo-nome">Nome:</label>
+            <input type="text" id="novo-nome" value="João Silva">
+            <label for="novo-avatar">Foto de Perfil:</label>
+            <input type="file" id="novo-avatar" accept="image/*">
+            <button onclick="salvarPerfil()">Salvar Alterações</button>
+        </div>
+    </div>
+
+    <!-- Modal para alterar senha -->
+    <div id="modal-senha" class="modal">
+        <div class="modal-conteudo">
+            <span class="fechar" onclick="fecharModal()">×</span>
+            <h2>Alterar Senha</h2>
+            <label for="senha-atual">Senha Atual:</label>
+            <input type="password" id="senha-atual">
+            <label for="nova-senha">Nova Senha:</label>
+            <input type="password" id="nova-senha">
+            <label for="confirmar-senha">Confirmar Nova Senha:</label>
+            <input type="password" id="confirmar-senha">
+            <button onclick="alterarSenha()">Alterar Senha</button>
+        </div>
+    </div>
+
+    <script src="../js/perfil.js"></script>
+</body>
+</html>

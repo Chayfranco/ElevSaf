@@ -1,21 +1,26 @@
 /* Estilos gerais */
 body {
+    padding-top: 80px;
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #007bff; /* Fundo azul abaixo da barra de navegação */
+    background-color: #ffffff; /* Fundo azul abaixo da barra de navegação */
 }
 
 /* Barra de navegação */
 .navbar {
+    position: fixed; /* Fixa no topo */
+    top: 0; /* Alinha no topo da página */
+    left: 0;
+    width: 100%;
     background-color: white;
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Mantém a barra sobre outros elementos */
 }
-
 /* Logo na barra de navegação */
 .navbar .logo img {
     height: 50px;
@@ -30,7 +35,7 @@ body {
 }
 
 .nav-links li {
-    margin: 0 15px;
+    margin: 0 30px;
 }
 
 .nav-links a {
@@ -90,12 +95,14 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
+    filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.8));
 }
+
 .slider-logo img {
     height: 800px; /* Aumenta o tamanho da logo */
     width: auto;
     transition: transform 0.3s ease, filter 0.3s ease;
-    filter: drop-shadow #002B61; /* Sombra para destacar */
+    filter: drop-shadow #ffffff; /* Sombra para destacar */
 }
 
 .slider-logo img:hover {
@@ -140,4 +147,131 @@ body {
 
 .slider-button:hover {
     background-color: rgba(0, 0, 0, 0.8);
+}
+/* Estilo para a seção de serviços */
+.servicos {
+    padding: 50px 20px;
+    background-color: #f0f0f0; /* Cor de fundo suave para destacar a seção */
+    text-align: center;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+}
+
+.servicos h2 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #0056b3; /* Cor vibrante para o título */
+}
+
+.servico-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.servico {
+    background-color: #fff; /* Fundo branco para os cartões de serviço */
+    padding: 20px;
+    width: 30%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.servico h3 {
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+    color: #007bff; /* Cor de título mais forte para os serviços */
+}
+
+.servico p {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* Efeito de hover para dinamismo */
+.servico:hover {
+    transform: translateY(-10px); /* Levanta o cartão quando o mouse passa */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Aumenta a sombra para destaque */
+}
+
+@media (max-width: 768px) {
+    .servico-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .servico {
+        width: 80%;
+        margin-bottom: 20px;
+    }
+}
+/* Estilo do rodapé */
+.rodape {
+    background-color: #022b58; /* Cor de fundo escura */
+    color: #fff; /* Texto branco para contraste */
+    padding: 40px 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.rodape-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    margin-bottom: 20px;
+}
+
+.rodape h3 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: #f39c12; /* Cor dourada para os títulos */
+}
+
+.informacoes p,
+.links ul li a,
+.contato p {
+    font-size: 1rem;
+    color: #ccc; /* Texto em cinza claro */
+    line-height: 1.6;
+    text-decoration: none;
+}
+
+.links ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.links ul li a {
+    color: #f39c12; /* Link dourado */
+    transition: color 0.3s ease;
+}
+
+.links ul li a:hover {
+    color: #fff; /* Muda para branco ao passar o mouse */
+}
+
+.copyright {
+    text-align: center;
+    font-size: 1rem;
+    color: #bbb;
+    padding-top: 20px;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+    .rodape-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .rodape h3 {
+        text-align: center;
+    }
+
+    .copyright p {
+        margin-top: 20px;
+    }
 }
