@@ -26,41 +26,37 @@
         <div class="perfil-container">
             <h1>Perfil de Usuário</h1>
             
-            <!-- Seção de informações do usuário -->
             <div class="informacoes-usuario">
-                <img id="foto-perfil" class="avatar" src="../imagens/avatar.png" alt="Foto de Perfil">
+                <img id="foto-perfil" class="avatar" src="" alt="Foto de Perfil">
                 <div class="detalhes-usuario">
-                    <p><strong>Nome:</strong> <span id="nome-usuario">João Silva</span></p>
-                    <p><strong>Email:</strong> joao@elevsaf.com</p>
-                    <button id="editar-perfil-btn" class="btn">Editar Perfil</button>
+                    <p><strong>Nome:</strong> <span id="nome-usuario">Carregando...</span></p>
+                    <p><strong>Email:</strong> <span id="email-usuario">Carregando...</span></p>
+                    <button id="editar-perfil-btn" class="btn" onclick="abrirModal('modal-editar')">Editar Perfil</button>
                 </div>
             </div>
 
-            <!-- Sessão de configurações -->
             <div class="configuracoes">
                 <h2>Configurações</h2>
                 <ul>
-                    <li><a href="#" onclick="abrirModalSenha()">Alterar Senha</a></li>
+                    <li><a href="#" onclick="abrirModal('modal-senha')">Alterar Senha</a></li>
                     <li><a href="#" onclick="sairDaConta()">Sair da Conta</a></li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <!-- Modal para editar perfil -->
     <div id="modal-editar" class="modal">
         <div class="modal-conteudo">
             <span class="fechar" onclick="fecharModal()">×</span>
             <h2>Editar Perfil</h2>
             <label for="novo-nome">Nome:</label>
-            <input type="text" id="novo-nome" value="João Silva">
+            <input type="text" id="novo-nome" value="">
             <label for="novo-avatar">Foto de Perfil:</label>
             <input type="file" id="novo-avatar" accept="image/*">
             <button onclick="salvarPerfil()">Salvar Alterações</button>
         </div>
     </div>
 
-    <!-- Modal para alterar senha -->
     <div id="modal-senha" class="modal">
         <div class="modal-conteudo">
             <span class="fechar" onclick="fecharModal()">×</span>
@@ -74,7 +70,7 @@
             <button onclick="alterarSenha()">Alterar Senha</button>
         </div>
     </div>
-
-    <script src="../js/perfil.js"></script>
+      
+    <script type="module" src="../js/perfil.js"></script>
 </body>
 </html>

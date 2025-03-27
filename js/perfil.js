@@ -1,166 +1,130 @@
-import { 
-    initializeApp 
-  } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-  import { 
-    getAuth, 
-    updateProfile, 
-    updatePassword, 
-    signOut, 
-    onAuthStateChanged 
-  } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-  import { 
-    getFirestore, 
-    doc, 
-    setDoc, 
-    updateDoc 
-  } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-  
-  // Configuração do Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyA6lwFb8AaEE8T0l5jn9hEtvUWsAoPp9pA",
-    authDomain: "elevsaf.firebaseapp.com",
-    databaseURL: "https://elevsaf-default-rtdb.firebaseio.com",
-    projectId: "elevsaf",
-    storageBucket: "elevsaf.firebasestorage.app",
-    messagingSenderId: "231722044544",
-    appId: "1:231722044544:web:bc6ba860df9a5b8db76a65",
-    measurementId: "G-46KJ23622F"
-  };
-  
-  // Inicializar o Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const firestore = getFirestore(app);
-  
-  // Aguarda o carregamento do DOM
-  document.addEventListener("DOMContentLoaded", () => {
-  
-    // Configura os botões assim que os elementos estiverem disponíveis
-    const editarPerfilBtn = document.getElementById('editar-perfil-btn');
-    if (editarPerfilBtn) {
-      editarPerfilBtn.addEventListener('click', editarPerfil);
-    }
-    
-    const fecharModalBtn = document.getElementById('fechar-modal');
-    if (fecharModalBtn) {
-      fecharModalBtn.addEventListener('click', fecharModal);
-    }
-    
-    const formAlterarSenha = document.getElementById('form-alterar-senha');
-    if (formAlterarSenha) {
-      formAlterarSenha.addEventListener('submit', (e) => {
-        e.preventDefault();
-        alterarSenha();
-      });
-    }
-    
-    // Fechar o modal ao clicar fora dele
-    window.addEventListener('click', (e) => {
-      const modalSenha = document.getElementById('modal-senha');
-      const modalEditar = document.getElementById('modal-editar');
-      if (e.target === modalSenha) {
-        modalSenha.style.display = 'none';
+import { getAuth, updateProfile, updatePassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+
+// Configuração do Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyA6lwFb8AaEE8T0l5jn9hEtvUWsAoPp9pA",
+  authDomain: "elevsaf.firebaseapp.com",
+  databaseURL: "https://elevsaf-default-rtdb.firebaseio.com",
+  projectId: "elevsaf",
+  storageBucket: "elevsaf.appspot.com",
+  messagingSenderId: "231722044544",
+  appId: "1:231722044544:web:bc6ba860df9a5b8db76a65",
+  measurementId: "G-46KJ23622F"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+document.addEventListener("DOMContentLoaded", async () => {
+  // Verificar se o usuário está autenticado
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      // O usuário está autenticado
+      document.getElementById("email-usuario").innerText = user.email;
+      const userRef = doc(db, "usuarios", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        document.getElementById("nome-usuario").innerText = userData.nome;
+        document.getElementById("foto-perfil").src = userData.fotoPerfil || "../imagens/avatar.png";
       }
-      if (e.target === modalEditar) {
-        modalEditar.style.display = 'none';
-      }
-    });
-    
-    // Atualiza a interface quando o estado de autenticação mudar
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById('nome-usuario').textContent = user.displayName || "Usuário";
-        document.getElementById('foto-perfil').src = user.photoURL || "default-avatar.png";
-      } else {
-        // Se não houver usuário, redireciona para a página de login (ou outra)
-        window.location.href = 'login.html';
-      }
-    });
+    } else {
+      // O usuário não está autenticado, limpar dados e redirecionar para o login
+      document.getElementById("nome-usuario").innerText = "";
+      document.getElementById("email-usuario").innerText = "";
+      document.getElementById("foto-perfil").src = "../imagens/avatar.png";
+      window.location.href = "inicio.html";
+    }
   });
-  
-  // Função para abrir o modal de editar perfil
-  function editarPerfil() {
-    document.getElementById('modal-editar').style.display = 'flex';
+});
+
+window.salvarPerfil = async function () {
+  const user = auth.currentUser;
+  if (!user) {
+    alert("Você precisa estar autenticado para realizar essa ação.");
+    return;
   }
-  
-  // Função para fechar ambos os modais
-  function fecharModal() {
-    document.getElementById('modal-editar').style.display = 'none';
-    document.getElementById('modal-senha').style.display = 'none';
-  }
-  
-  // Função para salvar as alterações no perfil (nome e foto)
-  async function salvarPerfil() {
-    const novoNome = document.getElementById('novo-nome').value;
-    const novoAvatar = document.getElementById('novo-avatar').files[0];
-    const user = auth.currentUser;
-    if (!user) return;
-    
-    // Atualiza o nome no Firebase Authentication (se fornecido)
-    if (novoNome) {
-      await updateProfile(user, { displayName: novoNome });
-    }
-    
-    // Se uma nova foto foi selecionada, atualiza a foto
-    if (novoAvatar) {
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-        const avatarUrl = e.target.result;
-        
-        // Atualiza o Firestore com a nova foto e nome
-        const userDocRef = doc(firestore, "users", user.uid);
-        await updateDoc(userDocRef, {
-          avatar: avatarUrl,
-          displayName: novoNome
-        });
-        
-        // Atualiza a imagem exibida no perfil
-        document.getElementById('foto-perfil').src = avatarUrl;
-      };
-      reader.readAsDataURL(novoAvatar);
-    }
-    
-    // Atualiza o nome exibido na interface
-    document.getElementById('nome-usuario').textContent = novoNome;
-    
-    // Fecha o modal de edição
-    fecharModal();
-  }
-  
-  // Função para abrir o modal de alterar senha
-  function abrirModalSenha() {
-    document.getElementById('modal-senha').style.display = 'flex';
-  }
-  
-  // Função para alterar a senha
-  async function alterarSenha() {
-    const senhaAtual = document.getElementById('senha-atual').value;
-    const novaSenha = document.getElementById('nova-senha').value;
-    const confirmarSenha = document.getElementById('confirmar-senha').value;
-    const user = auth.currentUser;
-    if (!user) return;
-    
-    if (novaSenha !== confirmarSenha) {
-      alert('As senhas não coincidem!');
-      return;
-    }
-    
+
+  const novoNome = document.getElementById("novo-nome").value;
+  const novoAvatar = document.getElementById("novo-avatar").files[0];
+
+  let fotoURL = user.photoURL;
+
+  if (novoAvatar) {
+    const storageRef = ref(storage, `perfil/${user.uid}`);
+    // Metadados para o arquivo de imagem
+    const metadata = {
+      contentType: 'image/jpeg'  // Ajuste o tipo conforme o tipo de imagem que está sendo carregada
+    };
+
     try {
-      await updatePassword(user, novaSenha);
-      alert('Senha alterada com sucesso!');
-      fecharModal();
+      // Faz o upload da imagem
+      await uploadBytes(storageRef, novoAvatar, metadata);
+      fotoURL = await getDownloadURL(storageRef);
     } catch (error) {
-      alert('Erro ao alterar a senha: ' + error.message);
+      console.error("Erro ao fazer upload da imagem:", error);
     }
   }
-  
-  // Função para sair da conta
-  function sairDaConta() {
-    signOut(auth).then(() => {
-      alert('Você saiu da sua conta!');
-      window.location.href = 'index.html'; // Redireciona para a página inicial
-    }).catch((error) => {
-      alert('Erro ao sair: ' + error.message);
-    });
+
+  try {
+    // Atualiza o perfil no Firebase Auth
+    await updateProfile(user, { displayName: novoNome, photoURL: fotoURL });
+    // Atualiza a coleção de usuários no Firestore
+    await setDoc(doc(db, "usuarios", user.uid), { nome: novoNome, fotoPerfil: fotoURL }, { merge: true });
+
+    // Atualiza a interface com os novos dados
+    document.getElementById("nome-usuario").innerText = novoNome;
+    document.getElementById("foto-perfil").src = fotoURL;
+
+    fecharModal();
+  } catch (error) {
+    alert("Erro ao atualizar perfil: " + error.message);
   }
-  
+};
+
+window.alterarSenha = async function () {
+  const user = auth.currentUser;
+  if (!user) {
+    alert("Você precisa estar autenticado para alterar a senha.");
+    return;
+  }
+
+  const novaSenha = document.getElementById("nova-senha").value;
+  const confirmarSenha = document.getElementById("confirmar-senha").value;
+
+  if (novaSenha !== confirmarSenha) {
+    alert("As senhas não coincidem!");
+    return;
+  }
+
+  try {
+    await updatePassword(user, novaSenha);
+    alert("Senha alterada com sucesso!");
+    fecharModal();
+  } catch (error) {
+    alert("Erro ao alterar senha: " + error.message);
+  }
+};
+
+window.sairDaConta = async function () {
+  await signOut(auth);
+  // Após sair, limpar os dados na interface
+  document.getElementById("nome-usuario").innerText = "";
+  document.getElementById("email-usuario").innerText = "";
+  document.getElementById("foto-perfil").src = "../imagens/avatar.png";
+  window.location.href = "inicio.html"; // Redireciona para a página de login
+};
+
+window.abrirModal = function (id) {
+  document.getElementById(id).style.display = "block";
+};
+
+window.fecharModal = function () {
+  document.querySelectorAll(".modal").forEach(modal => modal.style.display = "none");
+};

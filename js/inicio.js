@@ -59,4 +59,11 @@ form.addEventListener("submit", async (e) => {
             alert("Erro ao fazer login. Tente novamente.");
         }
     }
+
+    function fazerLogin() {
+        // Simula um login bem-sucedido
+        localStorage.setItem("usuarioLogado", "true");
+        window.location.href = "index.html"; // Redireciona para a tela inicial
+    }
+    
 });
