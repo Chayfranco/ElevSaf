@@ -15,16 +15,39 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
-
+// ID permitido
+const allowedUserId = "wqcbJ139uRXyk8wts5CAzP489W32";
 // Elementos do DOM
 const distanciaSensorInput = document.getElementById("distanciaSensor");
 const distanciaAguaInput = document.getElementById("distanciaAgua");
 const alertMessage = document.getElementById("alertMessage");
 const tabelaHistorico = document.getElementById("tabela-historico");
 
-// ID permitido
-const allowedUserId = "wqcbJ139uRXyk8wts5CAzP489W32";
+// Função para verificar se o usuário está logado e tem o ID correto
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // Verificar se o UID do usuário corresponde ao permitido
+        if (user.uid === allowedUserId) {
+            // Atualizar os valores em tempo real
+            onValue(ref(database, "sensor/distanciaReal"), (snapshot) => {
+                const distanciaReal = snapshot.val();
+                distanciaSensorInput.value = distanciaReal;
 
+                onValue(ref(database, "sensor/distanciaAgua"), (snapshot) => {
+                    const distanciaAgua = snapshot.val();
+                    distanciaAguaInput.value = distanciaAgua;
+                    atualizarAlerta(distanciaReal, distanciaAgua);
+                });
+            });
+        } else {
+            alertMessage.textContent = "Acesso negado: Usuário não autorizado.";
+            alertMessage.style.color = "red";
+        }
+    } else {
+        alertMessage.textContent = "Acesso negado: Você não está logado.";
+        alertMessage.style.color = "red";
+    }
+});
 
 let ultimoRegistro = null;
 
@@ -102,29 +125,3 @@ setInterval(() => {
         salvarNoBancoDeDados(ultimoRegistro.distanciaReal, ultimoRegistro.distanciaAgua, ultimoRegistro.resultado);
     }
 }, 5 * 60 * 1000); // 5 minutos
-
-// Função para verificar se o usuário está logado e tem o ID correto
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        // Verificar se o UID do usuário corresponde ao permitido
-        if (user.uid === allowedUserId) {
-            // Atualizar os valores em tempo real
-            onValue(ref(database, "sensor/distanciaReal"), (snapshot) => {
-                const distanciaReal = snapshot.val();
-                distanciaSensorInput.value = distanciaReal;
-
-                onValue(ref(database, "sensor/distanciaAgua"), (snapshot) => {
-                    const distanciaAgua = snapshot.val();
-                    distanciaAguaInput.value = distanciaAgua;
-                    atualizarAlerta(distanciaReal, distanciaAgua);
-                });
-            });
-        } else {
-            alertMessage.textContent = "Acesso negado: Usuário não autorizado.";
-            alertMessage.style.color = "red";
-        }
-    } else {
-        alertMessage.textContent = "Acesso negado: Você não está logado.";
-        alertMessage.style.color = "red";
-    }
-});
