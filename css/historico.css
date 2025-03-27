@@ -1,0 +1,93 @@
+/* Estilos gerais */
+body {
+    padding-top: 80px; /* Distância da barra de navegação */
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff; /* Fundo branco abaixo da barra de navegação */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Alinha o conteúdo ao topo */
+    height: 100vh;
+    flex-direction: column;
+    overflow: hidden; /* Impede a rolagem na área do body */
+}
+
+/* Barra de navegação */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+/* Logo na barra de navegação */
+.navbar .logo img {
+    height: 50px;
+}
+
+/* Links de navegação */
+.nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    margin-right: 10px;
+}
+
+.nav-links li {
+    margin: 0 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: color 0.3s ease-in-out;
+}
+
+.nav-links a:hover {
+    color: #0056b3;
+}
+
+/* Estilos do conteúdo que ficará rolando */
+.content {
+    width: 100%;
+    max-height: calc(100vh - 80px); /* Altura total da tela menos a altura da barra de navegação */
+    overflow-y: auto; /* Adiciona a rolagem apenas no conteúdo */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Estilos do gráfico */
+#graficoDistancia {
+    width: 80%; /* Reduz o tamanho do gráfico */
+    max-width: 800px; /* Limita a largura máxima */
+    height: 150px; /* Define uma altura fixada */
+    margin-top: 20px; /* Espaço superior */
+    margin-bottom: 20px; /* Espaço inferior */
+}
+
+/* Estilos da tabela */
+table {
+    width: 80%; /* Define a largura da tabela */
+    margin-top: 20px;
+    margin: 20px;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2
