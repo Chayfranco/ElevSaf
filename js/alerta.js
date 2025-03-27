@@ -25,6 +25,10 @@ const alertMessage = document.getElementById("alertMessage");
 function atualizarAlerta(distanciaReal, distanciaAgua) {
     const diferenca = distanciaReal - distanciaAgua;
 
+    distanciaSensorInput.addEventListener("input", () => {
+        console.log("Valor digitado:", distanciaSensorInput.value);
+    });
+
     if (distanciaAgua === 0) {
         alertMessage.textContent = "Monitoramento: Não há água";
         alertMessage.style.color = "green";
