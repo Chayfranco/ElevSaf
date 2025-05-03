@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitoramento - ElevSaf</title>
+  <link rel="icon" href="../imagens/Design_sem_nome_logo.png" type="image/x-icon">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0043e0; /* Fundo azul */
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .main-content {
+      background: #ffffff; /* Fundo branco para o bloco geral */
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      display: flex;
+      width: 90%;
+      max-width: 900px;
+      overflow: hidden;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .container {
+      background: #d3ae0a; /* Caixa amarela */
+      padding: 40px;
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .logo-area {
+      background: #ffffff; /* Área branca para logo */
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .logo-area img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 32px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    label {
+      font-size: 16px;
+      margin-top: 20px;
+      margin-bottom: 5px;
+      text-align: left;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      background-color: #fff;
+      color: #333;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: #999;
+    }
+
+    .resultado {
+      margin-top: 20px;
+      padding: 15px;
+      background: #fff;
+      color: #333;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        flex-direction: column;
+      }
+
+      .logo-area {
+        order: -1;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main-content">
+    <div class="container">
+      <h1>Monitoramento do poço</h1>
+
+      <label for="distanciaSensor">Distância real (mm):</label>
+      <input type="number" id="distanciaSensor" placeholder="Digite a distância">
+
+      <label for="distanciaAgua">Distância até a água (mm):</label>
+      <input type="number" id="distanciaAgua" readonly placeholder="Aguardando dados...">
+
+      <div class="resultado" id="alertMessage">
+        Aguardando monitoramento...
+      </div>
+    </div>
+
+    <div class="logo-area">
+      <img src="../imagens/Imagem do WhatsApp de 2025-02-12 à(s) 12.26.18_5bab93a2.jpg" alt="Logo ElevSaf">
+    </div>
+  </div>
+
+  <script type="module" src="../js/alerta.js"></script>
+
+</body>
+</html>

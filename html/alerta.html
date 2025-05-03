@@ -27,7 +27,7 @@
     
         <div class="alerta-box">
             <label for="distanciaSensor">Distância real (mm) entre o elevador e o fundo do poço:</label>
-            <input type="number" id="distanciaSensor" placeholder="Digite a distância">
+            <input type="number" id="distanciaSensor" class="input-roxo" placeholder="Digite a distância">
         </div>
         <div class="alerta-box">
             <label for="distanciaAgua">Distância entre o elevador e a água (mm):</label>
@@ -38,7 +38,6 @@
             <p id="alertMessage" class="alert-message">Aguardando dados...</p>
         </div>
     </div>
-    
 
     <div class="historico-container">
         <h2>Histórico de Leituras</h2>
@@ -46,14 +45,12 @@
             <thead>
                 <tr>
                     <th>Data e Hora</th>
-                    <th>Distância Sensor (mm)</th>
+                    <th>Distância Poço (mm)</th>
                     <th>Distância Água (mm)</th>
-                    <th>Monitoramento</th>  <!-- NOVA COLUNA -->
                 </tr>
             </thead>
             <tbody id="tabela-historico"></tbody>
         </table>
-        
     </div>
 
     <script type="module" src="../js/alerta.js"></script>
