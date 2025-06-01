@@ -16,87 +16,155 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-// Elementos do DOM
+// DOM
 const distanciaSensorInput = document.getElementById("distanciaSensor");
 const distanciaAguaInput = document.getElementById("distanciaAgua");
 const alertMessage = document.getElementById("alertMessage");
+const audio = document.getElementById("alertaAudio");
 
-// Função para atualizar a distância real no Firebase
+// Variáveis de controle
+let contadorValores = {};
+let valorFixadoAgua = null;
+let distanciaRealAnterior = null;
+
+const TOLERANCIA = 10; // ±10mm de tolerância
+
+// Função para checar se distância da água está dentro da tolerância da distância real
+function dentroDaTolerancia(distanciaReal, distanciaAgua) {
+    return Math.abs(distanciaReal - distanciaAgua) <= TOLERANCIA;
+}
+
+// Atualiza distância real no Firebase
 function atualizarDistanciaRealFirebase(novoValor) {
     const distanciaRealRef = ref(database, "sensor/distanciaReal");
     set(distanciaRealRef, parseInt(novoValor));
 }
 
-// Quando o usuário altera a distância real, salva no Firebase
+// Ao digitar nova distância real, resetar leitura e fixação
 distanciaSensorInput.addEventListener("input", (event) => {
     const novoValor = event.target.value;
-    if (novoValor !== "") {
+    if (novoValor !== "" && novoValor !== distanciaRealAnterior) {
         atualizarDistanciaRealFirebase(novoValor);
+        contadorValores = {};
+        valorFixadoAgua = null;
+        distanciaRealAnterior = novoValor;
+        console.log("🔄 Nova distância real definida. Reiniciando leitura da distância até a água.");
     }
 });
 
-// Função para atualizar a mensagem de alerta
+// Lógica de fixação da distância até a água
+function processarDistanciaAgua(valor) {
+    if (valorFixadoAgua !== null) {
+        return valorFixadoAgua;
+    }
+
+    contadorValores[valor] = (contadorValores[valor] || 0) + 1;
+
+    if (contadorValores[valor] === 2) {
+        valorFixadoAgua = valor;
+        console.log("📌 Valor da distância até a água fixado em:", valorFixadoAgua);
+    }
+
+    return valor;
+}
+
+// Avaliação e alerta
 function atualizarAlerta() {
     const distanciaReal = parseInt(distanciaSensorInput.value);
     const distanciaAgua = parseInt(distanciaAguaInput.value);
 
-    // Se a distância da água não for fornecida corretamente
+    const alturaMaxElevador = 350;
+    const desvio = 10;
+
     if (isNaN(distanciaReal) || isNaN(distanciaAgua)) {
-        alertMessage.textContent = "Aguardando dados...";
-        alertMessage.style.color = "gray";
+        exibirAlerta("Aguardando dados...", "gray");
         return;
     }
 
-    // Se o valor da distância da água for 8191, trata como não há água detectada
+    let texto = "";
+    let cor = "";
+
+    // Se leitura inválida
     if (distanciaAgua === 8191) {
-        alertMessage.textContent = "✅ Sem presença de água.";
-        alertMessage.style.color = "green";
-    }
-    // Se a distância entre o elevador e a água for muito pequena (menos de 5mm), alerta vermelho
-    else if (distanciaAgua - distanciaReal < 5) {
-        alertMessage.textContent = "🚨 Atenção: Elevador está muito próximo da água!";
-        alertMessage.style.color = "red";
-    }
-    // Alerta quando tem água (distância da água > 0)
-    else if (distanciaAgua > 0) {
-        alertMessage.textContent = "🚨 Atenção: Água detectada!";
-        alertMessage.style.color = "red";
-    }
-    // Alerta quando a leitura está em processo ou inconclusiva (distância da água == 0)
-    else if (distanciaAgua === 0) {
-        alertMessage.textContent = "⚠️ Possível água detectada, aguardando confirmação...";
-        alertMessage.style.color = "yellow";
+        texto = "⚠️ Erro na leitura do sensor!";
+        cor = "orange";
+
+    // Se distância da água dentro da tolerância da distância real (considera como sem água)
+    } else if (dentroDaTolerancia(distanciaReal, distanciaAgua)) {
+        texto = "✅ Não há presença de água.";
+        cor = "green";
+
+    // Caso distância da água menor que altura máxima do elevador (possível presença de água)
+    } else if (distanciaAgua <= alturaMaxElevador) {
+        const diferenca = Math.abs(distanciaReal - distanciaAgua);
+
+        if (diferenca >= 40 + desvio) {
+            texto = `⚠️ Atenção: a altura da água é ${diferenca} mm, está muito próxima da superfície do poço`;
+            cor = "red";
+            tocarAlerta();
+        } else {
+            texto = `⚠️ Atenção: água identificada. A altura da água é ${diferenca} mm`;
+            cor = "orange";
+        }
+
+    } else {
+        texto = "✅ Não há presença de água.";
+        cor = "green";
     }
 
-    // Se a diferença entre a água e o elevador for maior que 50mm, pode ser ausência de água
-    if (distanciaAgua - distanciaReal > 50) {
-        alertMessage.textContent = "✅ Provável ausência de água no poço.";
-        alertMessage.style.color = "green";
+    exibirAlerta(texto, cor);
+}
+
+function exibirAlerta(texto, cor) {
+    alertMessage.textContent = texto;
+    alertMessage.style.color = cor;
+}
+
+let alertaCriticoAtivo = false;
+let audioDesbloqueado = false;
+
+function tocarAlerta() {
+    if (!alertaCriticoAtivo && audioDesbloqueado) {
+        alertaCriticoAtivo = true;
+        audio.currentTime = 0;
+        audio.play().catch(err => console.warn("Erro ao tocar o áudio:", err));
     }
 }
 
-// Função principal que monitora os sensores
 function monitorarSensores() {
     const distanciaRealRef = ref(database, "sensor/distanciaReal");
     const distanciaAguaRef = ref(database, "sensor/distanciaAgua");
 
-    // Observa alterações na distância real (definida pelo usuário)
     onValue(distanciaRealRef, (snapshot) => {
         const val = snapshot.val();
         if (val !== null) {
             distanciaSensorInput.value = val;
+            atualizarAlerta();
         }
-        atualizarAlerta();
     });
 
-    // Observa alterações na distância da água (vinda do sensor)
     onValue(distanciaAguaRef, (snapshot) => {
         const val = snapshot.val();
         if (val !== null) {
-            distanciaAguaInput.value = val;
+            const processado = processarDistanciaAgua(val);
+            distanciaAguaInput.value = processado;
+            atualizarAlerta();
         }
-        atualizarAlerta();
     });
 }
 
-monitorarSensores(); // Inicia o monitoramento automático
+function desbloquearAudio() {
+    if (!audioDesbloqueado) {
+        audio.play().then(() => {
+            audio.pause();
+            audio.currentTime = 0;
+            audioDesbloqueado = true;
+            console.log("✅ Áudio desbloqueado.");
+        }).catch(err => {
+            console.warn("⚠️ Não foi possível desbloquear o áudio automaticamente:", err);
+        });
+    }
+}
+
+document.body.addEventListener("click", desbloquearAudio);
+monitorarSensores();

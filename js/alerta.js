@@ -33,45 +33,48 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function atualizarAlerta() {
-        const distanciaReal = parseInt(distanciaSensorInput.value);
-        const distanciaAgua = parseInt(distanciaAguaInput.value);
-
+        const distanciaReal = parseInt(distanciaSensorInput.value);  
+        const distanciaAgua = parseInt(distanciaAguaInput.value);    
+      
+        const alturaMaxElevador = 350;   
+        const desvio = 10;     
+        const diferenca = Math.abs(distanciaReal - distanciaAgua);          
+    
         if (isNaN(distanciaReal) || isNaN(distanciaAgua)) {
             alertMessage.textContent = "Aguardando dados...";
             alertMessage.style.color = "gray";
             return;
         }
 
-        const diferenca = distanciaAgua - distanciaReal;
-        const fundoDoPoco = 100;
-        const limiteInferiorElevador = fundoDoPoco - 5;
-
-        if (distanciaReal >= limiteInferiorElevador && distanciaAgua < fundoDoPoco) {
-            alertMessage.textContent = "🚨 ALERTA CRÍTICO: Elevador prestes a tocar a água no fundo!";
-            alertMessage.style.color = "red";
-            tocarAlerta();
-        } else if (distanciaAgua === 8191 && distanciaAgua === distanciaReal) {
-            alertMessage.textContent = "✅ Sem presença de água.";
-            alertMessage.style.color = "green";
-            alertaCriticoAtivo = false;
-        } else if (diferenca < 5) {
-            alertMessage.textContent = "🚨 Atenção: Elevador está muito próximo da água!";
-            alertMessage.style.color = "red";
-            tocarAlerta();
-        } else if (diferenca > 50) {
-            alertMessage.textContent = "✅ Provável ausência de água no poço.";
-            alertMessage.style.color = "green";
-            alertaCriticoAtivo = false;
-        } else if (distanciaAgua > 0) {
-            alertMessage.textContent = "🚨 Atenção: Água detectada!";
-            alertMessage.style.color = "red";
-            alertaCriticoAtivo = false;
-        } else if (distanciaAgua === 0) {
-            alertMessage.textContent = "⚠️ Possível água detectada, aguardando confirmação...";
+        // Caso de erro do sensor
+        if (distanciaAgua === 8191) {
+            alertMessage.textContent = "⚠️ Erro na leitura do sensor!";
             alertMessage.style.color = "orange";
-            alertaCriticoAtivo = false;
+            return;
         }
-    }
+
+        if (distanciaAgua === distanciaReal) {
+            alertMessage.textContent = "✅ Não há prença de água.";
+            alertMessage.style.color = "green";
+            return;
+        }
+    
+        // *** NOVO: verificar se a água está abaixo do topo
+        if (distanciaAgua <= alturaMaxElevador) {
+            // Só verifica a diferença se a água está abaixo do topo
+            if (diferenca >= 20 + desvio || diferenca >= 20 - desvio) { 
+                alertMessage.textContent = "🚨 Atenção: Elevador está muito próximo da água!";
+                alertMessage.style.color = "red";
+                tocarAlerta();
+            } else if (diferenca <= 20 + desvio || diferenca <= 20 - desvio) { 
+                alertMessage.textContent = "⚠️ Atenção: Água detectada próxima ao elevador.";
+                alertMessage.style.color = "orange";
+        } else {
+            // A água está acima do topo: sem risco
+            alertMessage.textContent = "✅ Não há prença de água.";
+            alertMessage.style.color = "green";
+        }
+    }    
 
     function tocarAlerta() {
         if (!alertaCriticoAtivo && audioDesbloqueado) {
@@ -121,4 +124,5 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.addEventListener("click", desbloquearAudio);
 
     monitorarSensores();
+}
 });
